@@ -50,6 +50,26 @@ Additional you need to include an additional header file:
 
 and link against `libusershell_econf`.
 
+Example code:
+```C
+...
+#include <usershell_econf.h>
+...
+int
+main (void)
+{
+  char *shell;
+
+...
+
+  setusershell_econf ();
+  while ((shell = getusershell_econf ()) != NULL)
+    printf ("[%s]\n", shell);
+  endusershell_econf ();
+...
+}
+```
+
 ## Licensing
 
 See the file COPYING for full text and copying restrictions.
