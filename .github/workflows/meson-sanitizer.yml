@@ -1,0 +1,48 @@
+name: meson sanitizer
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Show OS variant
+      run: grep ^PRETTY_NAME /etc/os-release
+    - name: Install libeconf-devel
+      run: |
+        sudo apt-get update
+        sudo apt-get install libeconf-dev meson
+    - name: Checkout libeconf
+      uses: actions/checkout@v4
+      with:
+        repository: openSUSE/libeconf
+    - name:
+      uses: BSFishy/meson-build@v1.0.3
+      with:
+        action: build
+        directory: build
+        setup-options: --prefix=/usr
+        meson-version: 0.61.4
+    - name: Install libeconf
+      run: sudo meson install -C build
+    - name: Cleanup libeconf
+      run: rm -rf .git *
+    - name: Checkout libnss_econf
+      uses: actions/checkout@v4
+    - name: Build libnss_econf
+      uses: BSFishy/meson-build@v1.0.3
+      with:
+        action: build
+        directory: build
+        setup-options: -Db_sanitize=address,undefined
+        options: --verbose
+        meson-version: 0.61.4
+    - name: Test libnss_econf
+      uses: BSFishy/meson-build@v1.0.3
+      with:
+        action: test
+        directory: build
+        setup-options: -Db_sanitize=address,undefined
+        options: --verbose
+        meson-version: 0.61.4
