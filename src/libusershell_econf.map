@@ -6,6 +6,7 @@ LIBUSERSHELL_ECONF_1.0 {
     setusershell_econf;
     getusershell_econf;
     endusershell_econf;
+    checkusershell_econf;
 
   local:
     *;

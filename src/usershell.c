@@ -144,3 +144,24 @@ getusershell (void)
 {
   return getusershell_econf ();
 }
+
+bool
+checkusershell_econf (const char *shell)
+{
+  struct data_t data = {NULL, NULL, 0, 0};
+  bool exists = false;
+
+  if (data.key_file == NULL)
+    internal_setusershell(&data);
+
+  char *val = NULL;
+  if (!econf_getStringValue (data.key_file, NULL, shell, &val))
+    exists = true;
+
+  if (val)
+    free (val);
+
+  internal_endusershell (&data);
+
+  return exists;
+}

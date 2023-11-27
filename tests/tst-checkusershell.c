@@ -14,15 +14,23 @@
    You should have received a copy of the GNU Lesser General Public
    License along with program; if not, see <https://www.gnu.org/licenses/>. */
 
-#pragma once
+#include <stdio.h>
+#include <unistd.h>
 
-#include <stdbool.h>
+#include "usershell_econf.h"
 
-/* Successive calls return the shells listed in `/etc/shells' via libeconf
-   following the configuration files specification for hermetic /usr:
-   https://github.com/uapi-group/specifications/blob/main/specs/configuration_files_specification.md */
+/* Test case: call checkusershell_econf()  */
 
-extern void setusershell_econf (void);
-extern char *getusershell_econf (void);
-extern void endusershell_econf (void);
-extern bool checkusershell_econf (const char *shell);
+int
+main (void)
+{
+  printf ("/bin/sh entry should exist\n");
+  if (!checkusershell_econf("/bin/sh"))
+    return 1;
+
+  printf ("/does/not/exists entry should not exist\n");
+  if (checkusershell_econf("/does/not/exists"))
+    return 1;
+
+  return 0;
+}
